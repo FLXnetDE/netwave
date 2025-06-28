@@ -1,0 +1,25 @@
+{
+    "name": "netwave",
+    "version": "1.0.0",
+    "description": "An experimental software tool for processing amateur radio traffic over network",
+    "main": "index.js",
+    "scripts": {
+        "dev": "ts-node src/index.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/FLXnetDE/netwave.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/FLXnetDE/netwave/issues"
+    },
+    "homepage": "https://github.com/FLXnetDE/netwave#readme",
+    "devDependencies": {
+        "@types/node": "^24.0.7",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.3"
+    }
+}
