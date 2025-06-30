@@ -1,30 +1,33 @@
 import express from 'express';
-import http from 'http';
-import { Server } from 'socket.io';
 import cors from 'cors';
+import { Server, Socket } from 'socket.io';
 
 const app = express();
 app.use(cors());
 
-const server = http.createServer(app);
-const io = new Server(server, {
-    cors: { origin: '*' },
+const PORT = 3000;
+
+// Start the Express server and get the returned HTTP server instance implicitly
+const httpServer = app.listen(PORT, () => {
+    console.log(`Server listening on http://localhost:${PORT}`);
 });
 
-io.on('connection', (socket) => {
-    console.log('Client connected:', socket.id);
+// Initialize socket.io on top of the httpServer
+const io = new Server(httpServer, {
+    cors: {
+        origin: '*', // loosen CORS for dev
+        methods: ['GET', 'POST'],
+    },
+});
 
-    socket.on('audio-data', (chunk: ArrayBuffer) => {
-        console.log(`Received audio chunk of ${chunk.byteLength} bytes`);
-        // Here you can save/process/playback the chunk
+io.on('connection', (socket: Socket) => {
+    console.log(`Client connected: ${socket.id}`);
+
+    socket.on('audio-data', (data: ArrayBuffer) => {
+        socket.broadcast.emit('audio-data', data);
     });
 
     socket.on('disconnect', () => {
-        console.log('Client disconnected:', socket.id);
+        console.log(`Client disconnected: ${socket.id}`);
     });
-});
-
-const PORT = 4000;
-server.listen(PORT, () => {
-    console.log(`Socket.IO server running on port ${PORT}`);
 });
