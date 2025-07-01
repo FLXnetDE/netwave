@@ -30,6 +30,10 @@ class ChannelMessageQueue {
         return queue?.[0];
     }
 
+    getQueues(): Map<number, ChannelMessage[]> {
+        return this.queues;
+    }
+
     getQueue(channelId: number): ChannelMessage[] {
         return [...(this.queues.get(channelId) ?? [])];
     }
