@@ -23,6 +23,11 @@ class ChannelPipeRack {
             channelMessage.channelId,
             channelMessage.clientInfo,
         );
+        this.channelManager
+            .getChannelMessageHandlers(channelMessage.channelId)
+            .forEach((handler) =>
+                handler.handle(this.channelSocket, channelMessage),
+            );
     }
 }
 

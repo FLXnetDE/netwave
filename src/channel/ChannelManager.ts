@@ -1,6 +1,8 @@
 import logger from '../util/logger';
 import Channel from './Channel';
+import ChannelMessageHandler from './ChannelMessageHandler';
 import { ClientInfo } from './ClientInfo';
+import LoggerChannelMessageHandler from './handlers/LoggerChannelMessageHandler';
 
 class ChannelManager {
     private channelRegistry: Map<number, Channel>;
@@ -17,13 +19,28 @@ class ChannelManager {
         this.channelRegistry.set(channelId, {
             channelId,
             channelClientRegistry: [],
-            channelMessageHandlers: [],
+            channelMessageHandlers: [...this.defaultChannelMessageHandlers()],
         });
     }
 
     getClients(channelId: number): ClientInfo[] {
         if (!this.hasChannel(channelId)) return [];
         return this.channelRegistry.get(channelId)!.channelClientRegistry;
+    }
+
+    getChannelMessageHandlers(channelId: number): ChannelMessageHandler[] {
+        if (!this.hasChannel(channelId)) return [];
+        return this.channelRegistry.get(channelId)!.channelMessageHandlers;
+    }
+
+    addChannelMessageHandler(
+        channelId: number,
+        channelMessageHandler: ChannelMessageHandler,
+    ) {
+        if (!this.hasChannel(channelId)) return;
+        this.channelRegistry
+            .get(channelId)!
+            .channelMessageHandlers.push(channelMessageHandler);
     }
 
     hasClient(channelId: number, clientInfo: ClientInfo): boolean {
@@ -36,12 +53,17 @@ class ChannelManager {
 
     registerClient(channelId: number, clientInfo: ClientInfo) {
         if (!this.hasChannel(channelId)) this.createChannel(channelId);
+        if (this.hasClient(channelId, clientInfo)) return;
         this.channelRegistry
             .get(channelId)!
             .channelClientRegistry.push(clientInfo);
         logger.info(
             `${clientInfo.address}:${clientInfo.port} registered for channel ${channelId}`,
         );
+    }
+
+    defaultChannelMessageHandlers(): ChannelMessageHandler[] {
+        return [new LoggerChannelMessageHandler()];
     }
 }
 
