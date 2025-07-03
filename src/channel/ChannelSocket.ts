@@ -18,8 +18,9 @@ class ChannelSocket extends EventEmitter {
         this.server.bind(this.port, this.bind.bind(this));
     }
 
-    send(clientInfo: ClientInfo, payload: Buffer) {
-        this.server.send(payload, clientInfo.port, clientInfo.address);
+    send(clientInfo: ClientInfo, channelId: number, payload: Buffer) {
+        const packet: Buffer = this.createRawMessage(channelId, payload);
+        this.server.send(packet, clientInfo.port, clientInfo.address);
     }
 
     private listener(message: Buffer, remoteInfo: RemoteInfo): void {
@@ -57,6 +58,18 @@ class ChannelSocket extends EventEmitter {
             channelId,
             payload,
         };
+    }
+
+    private createRawMessage(channelId: number, payload: Buffer): Buffer {
+        const message = Buffer.alloc(4 + payload.length);
+
+        // Write channelId as big-endian unsigned 32-bit int at the start
+        message.writeUInt32BE(channelId, 0);
+
+        // Append payload bytes after the 4-byte channelId
+        payload.copy(message, 4);
+
+        return message;
     }
 }
 

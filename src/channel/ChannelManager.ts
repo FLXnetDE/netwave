@@ -2,6 +2,7 @@ import logger from '../util/logger';
 import Channel from './Channel';
 import ChannelMessageHandler from './ChannelMessageHandler';
 import { ClientInfo } from './ClientInfo';
+import EchoChannelMessageHandler from './handlers/EchoChannelMessageHandler';
 import LoggerChannelMessageHandler from './handlers/LoggerChannelMessageHandler';
 
 class ChannelManager {
@@ -63,7 +64,10 @@ class ChannelManager {
     }
 
     defaultChannelMessageHandlers(): ChannelMessageHandler[] {
-        return [new LoggerChannelMessageHandler()];
+        return [
+            // new LoggerChannelMessageHandler(),
+            new EchoChannelMessageHandler(),
+        ];
     }
 }
 
