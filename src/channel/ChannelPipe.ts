@@ -1,14 +1,14 @@
-import ChannelPipeRackOptions from './ChannelPipeRackOptions';
+import ChannelPipeOptions from './ChannelPipeOptions';
 import ChannelSocket from './ChannelSocket';
 import { ChannelMessage } from './ChannelMessage';
 import ChannelManager from './ChannelManager';
 
-class ChannelPipeRack {
+class ChannelPipe {
     private channelManager: ChannelManager;
 
     private channelSocket: ChannelSocket;
 
-    constructor(options: ChannelPipeRackOptions) {
+    constructor(options: ChannelPipeOptions) {
         this.channelManager = new ChannelManager();
 
         this.channelSocket = new ChannelSocket(options.udpPort);
@@ -31,4 +31,4 @@ class ChannelPipeRack {
     }
 }
 
-export default ChannelPipeRack;
+export default ChannelPipe;

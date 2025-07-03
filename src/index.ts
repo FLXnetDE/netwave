@@ -1,14 +1,12 @@
-import ChannelPipeRack from './channel/ChannelPipeRack';
-import ChannelPipeRackOptions from './channel/ChannelPipeRackOptions';
+import ChannelPipe from './channel/ChannelPipe';
+import ChannelPipeOptions from './channel/ChannelPipeOptions';
 
 const main = () => {
-    const channelPipeRackOptions: ChannelPipeRackOptions = {
+    const channelPipeOptions: ChannelPipeOptions = {
         udpPort: 5000,
     };
 
-    const channelPipeRack: ChannelPipeRack = new ChannelPipeRack(
-        channelPipeRackOptions,
-    );
+    new ChannelPipe(channelPipeOptions);
 };
 
 main();
