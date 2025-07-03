@@ -26,7 +26,11 @@ class ChannelPipe {
         this.channelManager
             .getChannelMessageHandlers(channelMessage.channelId)
             .forEach((handler) =>
-                handler.handle(this.channelSocket, channelMessage),
+                handler.handle(
+                    channelMessage,
+                    this.channelSocket,
+                    this.channelManager,
+                ),
             );
     }
 }
