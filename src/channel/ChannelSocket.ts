@@ -2,7 +2,7 @@ import dgram, { RemoteInfo, Socket } from 'dgram';
 import logger from '../util/logger';
 import { EventEmitter } from 'stream';
 import { ClientInfo, fromRemoteInfo } from './ClientInfo';
-import { ChannelMessage, toInfoString } from './ChannelMessage';
+import { ChannelMessage } from './ChannelMessage';
 
 class ChannelSocket extends EventEmitter {
     private port: number;
