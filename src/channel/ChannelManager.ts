@@ -65,8 +65,8 @@ class ChannelManager {
 
     defaultChannelMessageHandlers(): ChannelMessageHandler[] {
         return [
-            new LoggerChannelMessageHandler(),
-            // new EchoChannelMessageHandler(1000),
+            // new LoggerChannelMessageHandler(),
+            new EchoChannelMessageHandler(0),
         ];
     }
 }

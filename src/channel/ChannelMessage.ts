@@ -1,4 +1,4 @@
-import { ClientInfo } from './ClientInfo';
+import { ClientInfo, clientInfoString } from './ClientInfo';
 
 type ChannelMessage = {
     channelId: number;
@@ -6,8 +6,10 @@ type ChannelMessage = {
     payload: Buffer;
 };
 
-const toInfoString = (channelMessage: ChannelMessage): string => {
-    return `${channelMessage.clientInfo.address}:${channelMessage.clientInfo.port} [${channelMessage.channelId}] => ${channelMessage.payload.length} bytes`;
+const channelMessageInfoString = (channelMessage: ChannelMessage): string => {
+    return `${clientInfoString(channelMessage.clientInfo)} @ [${
+        channelMessage.channelId
+    }] => ${channelMessage.payload.length} bytes`;
 };
 
-export { ChannelMessage, toInfoString };
+export { ChannelMessage, channelMessageInfoString };

@@ -1,6 +1,6 @@
 import logger from '../../util/logger';
 import ChannelManager from '../ChannelManager';
-import { ChannelMessage, toInfoString } from '../ChannelMessage';
+import { ChannelMessage, channelMessageInfoString } from '../ChannelMessage';
 import ChannelMessageHandler from '../ChannelMessageHandler';
 import ChannelSocket from '../ChannelSocket';
 
@@ -10,7 +10,7 @@ class LoggerChannelMessageHandler implements ChannelMessageHandler {
         channelSocket: ChannelSocket,
         channelManager: ChannelManager,
     ): void {
-        logger.info(toInfoString(channelMessage));
+        logger.info(channelMessageInfoString(channelMessage));
     }
 }
 

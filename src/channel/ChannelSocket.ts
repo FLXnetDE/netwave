@@ -19,55 +19,60 @@ class ChannelSocket extends EventEmitter {
     }
 
     send(clientInfo: ClientInfo, channelId: number, payload: Buffer) {
-        const packet: Buffer = this.createRawMessage(channelId, payload);
+        const packet: Buffer = this.createRawMessage(
+            channelId,
+            clientInfo.clientId,
+            payload,
+        );
         this.server.send(packet, clientInfo.port, clientInfo.address);
     }
 
     private listener(message: Buffer, remoteInfo: RemoteInfo): void {
         if (message.length < 5) return;
 
-        const parsedCannelMessage: Omit<ChannelMessage, 'clientInfo'> =
-            this.parseRawMessage(message);
+        const parsedCannelMessage: ChannelMessage = this.parseMessage(
+            message,
+            remoteInfo,
+        );
 
-        const channelMessage: ChannelMessage = {
-            ...parsedCannelMessage,
-            clientInfo: fromRemoteInfo(remoteInfo),
-        };
-
-        this.emit<ChannelMessage>('message', channelMessage);
+        this.emit<ChannelMessage>('message', parsedCannelMessage);
     }
 
     private bind(): void {
         logger.info(`UDP server listening on port ${this.port}`);
     }
 
-    private parseRawMessage(
+    private parseMessage(
         message: Buffer,
-    ): Omit<ChannelMessage, 'clientInfo'> {
-        if (message.length < 4) {
-            throw new Error('Packet too short');
-        }
-
-        // Read channel ID as big-endian unsigned 32-bit int
+        remoteInfo: RemoteInfo,
+    ): ChannelMessage {
         const channelId: number = message.readUInt32BE(0);
+        const clientId: number = message.readUInt32BE(4);
+        const payload: Buffer = message.subarray(8);
 
-        // Audio data after the first 4 bytes
-        const payload: Buffer = message.subarray(4);
-
-        return {
+        const channelMessage: ChannelMessage = {
             channelId,
+            clientInfo: {
+                clientId,
+                address: remoteInfo.address,
+                port: remoteInfo.port,
+            },
             payload,
         };
+
+        return channelMessage;
     }
 
-    private createRawMessage(channelId: number, payload: Buffer): Buffer {
-        const message = Buffer.alloc(4 + payload.length);
+    private createRawMessage(
+        channelId: number,
+        clientId: number,
+        payload: Buffer,
+    ): Buffer {
+        const message = Buffer.alloc(8 + payload.length);
 
-        // Write channelId as big-endian unsigned 32-bit int at the start
         message.writeUInt32BE(channelId, 0);
-
-        // Append payload bytes after the 4-byte channelId
-        payload.copy(message, 4);
+        message.writeUInt32BE(clientId, 4);
+        payload.copy(message, 8);
 
         return message;
     }
