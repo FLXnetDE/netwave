@@ -1,7 +1,7 @@
 import logger from '../util/logger';
 import Channel from './Channel';
 import ChannelMessageHandler from './ChannelMessageHandler';
-import { ClientInfo } from './ClientInfo';
+import { ClientInfo, clientInfoString } from './ClientInfo';
 import EchoChannelMessageHandler from './handlers/EchoChannelMessageHandler';
 import LoggerChannelMessageHandler from './handlers/LoggerChannelMessageHandler';
 
@@ -59,15 +59,21 @@ class ChannelManager {
             .get(channelId)!
             .channelClientRegistry.push(clientInfo);
         logger.info(
-            `${clientInfo.address}:${clientInfo.port} registered for channel ${channelId}`,
+            `${clientInfoString(
+                clientInfo,
+            )} => registered for channel ${channelId}`,
         );
     }
 
     defaultChannelMessageHandlers(): ChannelMessageHandler[] {
         return [
-            // new LoggerChannelMessageHandler(),
-            new EchoChannelMessageHandler(0),
+            new LoggerChannelMessageHandler(),
+            new EchoChannelMessageHandler(1000),
         ];
+    }
+
+    getChannelRegistry(): Map<number, Channel> {
+        return this.channelRegistry;
     }
 }
 

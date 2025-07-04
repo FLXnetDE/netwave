@@ -1,3 +1,4 @@
+import { startApiServer } from './api/app';
 import ChannelPipe from './channel/ChannelPipe';
 import ChannelPipeOptions from './channel/ChannelPipeOptions';
 
@@ -6,7 +7,9 @@ const main = () => {
         udpPort: 5000,
     };
 
-    new ChannelPipe(channelPipeOptions);
+    const channelPipe: ChannelPipe = new ChannelPipe(channelPipeOptions);
+
+    startApiServer(3000, channelPipe);
 };
 
 main();

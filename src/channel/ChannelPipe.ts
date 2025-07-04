@@ -33,6 +33,10 @@ class ChannelPipe {
                 ),
             );
     }
+
+    getChannelManager(): ChannelManager {
+        return this.channelManager;
+    }
 }
 
 export default ChannelPipe;
