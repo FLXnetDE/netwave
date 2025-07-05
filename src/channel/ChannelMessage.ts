@@ -6,6 +6,11 @@ type ChannelMessage = {
     payload: Buffer;
 };
 
+/**
+ *
+ * @param channelMessage
+ * @returns
+ */
 const channelMessageInfoString = (channelMessage: ChannelMessage): string => {
     return `${clientInfoString(channelMessage.clientInfo)} @ [${
         channelMessage.channelId

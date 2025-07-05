@@ -5,7 +5,6 @@ import ChannelManager from './ChannelManager';
 
 class ChannelPipe {
     private channelManager: ChannelManager;
-
     private channelSocket: ChannelSocket;
 
     constructor(options: ChannelPipeOptions) {
@@ -18,6 +17,10 @@ class ChannelPipe {
         );
     }
 
+    /**
+     *
+     * @param channelMessage
+     */
     private onChannelSocketMessage(channelMessage: ChannelMessage): void {
         this.channelManager.registerClient(
             channelMessage.channelId,
@@ -34,6 +37,10 @@ class ChannelPipe {
             );
     }
 
+    /**
+     *
+     * @returns
+     */
     getChannelManager(): ChannelManager {
         return this.channelManager;
     }

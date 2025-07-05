@@ -12,11 +12,28 @@ class ChannelManager {
         this.channelRegistry = new Map<number, Channel>();
     }
 
+    /**
+     * Get all registered channels
+     * @returns all registered channels
+     */
+    getChannels(): Channel[] {
+        return Array.from(this.channelRegistry.values());
+    }
+
+    /**
+     * Check if a channel with given id is registered
+     * @param channelId channel id to check
+     * @returns True or false wheter the channel is registered or not
+     */
     hasChannel(channelId: number): boolean {
         return this.channelRegistry.has(channelId);
     }
 
-    createChannel(channelId: number) {
+    /**
+     * Create a new channel with default settings based on a given id
+     * @param channelId channel id to be created
+     */
+    createChannel(channelId: number): void {
         this.channelRegistry.set(channelId, {
             channelId,
             channelClientRegistry: [],
@@ -24,26 +41,48 @@ class ChannelManager {
         });
     }
 
+    /**
+     * Get registered clients of a channel id
+     * @param channelId channel id to query
+     * @returns List of ClientInfo
+     */
     getClients(channelId: number): ClientInfo[] {
         if (!this.hasChannel(channelId)) return [];
         return this.channelRegistry.get(channelId)!.channelClientRegistry;
     }
 
+    /**
+     * Get registered channel message handlers of a channel
+     * @param channelId channel id to query
+     * @returns List of ChannelMessageHandler
+     */
     getChannelMessageHandlers(channelId: number): ChannelMessageHandler[] {
         if (!this.hasChannel(channelId)) return [];
         return this.channelRegistry.get(channelId)!.channelMessageHandlers;
     }
 
+    /**
+     * Add a ChannelMessageHandler to a given channel
+     * @param channelId channel id to add the handler to
+     * @param channelMessageHandler handler implementation to be added
+     */
     addChannelMessageHandler(
         channelId: number,
         channelMessageHandler: ChannelMessageHandler,
-    ) {
-        if (!this.hasChannel(channelId)) return;
-        this.channelRegistry
-            .get(channelId)!
-            .channelMessageHandlers.push(channelMessageHandler);
+    ): void {
+        if (this.hasChannel(channelId)) {
+            this.channelRegistry
+                .get(channelId)!
+                .channelMessageHandlers.push(channelMessageHandler);
+        }
     }
 
+    /**
+     * Check if a channel with given id has registered a given client
+     * @param channelId channel id to query
+     * @param clientInfo client info to query
+     * @returns True or false wheter a client is registered to a channel or not
+     */
     hasClient(channelId: number, clientInfo: ClientInfo): boolean {
         return this.getClients(channelId).some(
             (info) =>
@@ -52,7 +91,12 @@ class ChannelManager {
         );
     }
 
-    registerClient(channelId: number, clientInfo: ClientInfo) {
+    /**
+     * Register a client to a channel
+     * @param channelId channel id to add the client to
+     * @param clientInfo client info to be added
+     */
+    registerClient(channelId: number, clientInfo: ClientInfo): void {
         if (!this.hasChannel(channelId)) this.createChannel(channelId);
         if (this.hasClient(channelId, clientInfo)) return;
         this.channelRegistry
@@ -65,6 +109,10 @@ class ChannelManager {
         );
     }
 
+    /**
+     * Default set of channel message handlers
+     * @returns List of ChannelMessageHandler
+     */
     defaultChannelMessageHandlers(): ChannelMessageHandler[] {
         return [
             new LoggerChannelMessageHandler(),
@@ -72,6 +120,10 @@ class ChannelManager {
         ];
     }
 
+    /**
+     * Get the instance of the channel registry
+     * @returns Map<number, Channel>
+     */
     getChannelRegistry(): Map<number, Channel> {
         return this.channelRegistry;
     }
