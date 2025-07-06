@@ -6,12 +6,12 @@ on:
             - main
 
 jobs:
-    build-push-ghcr:
+    docker-build-push:
         runs-on: [self-hosted, linux]
 
         permissions:
             contents: read
-            packages: write # Required to push to GHCR
+            packages: write # Needed to push to GitHub Container Registry
 
         steps:
             - name: Checkout code
@@ -24,18 +24,17 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Build the app
-              run: |
-                  echo "Replace this with your actual build steps"
-                  # Example: npm ci && npm run build
+            - name: Set image name from repo name
+              id: vars
+              run: echo "IMAGE=ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}" >> $GITHUB_OUTPUT
 
-            - name: Build Docker image
+            - name: Build Docker image (app build happens in Dockerfile)
               run: |
-                  IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/myapp
-                  docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${{ github.sha }} .
+                  docker build \
+                    -t ${{ steps.vars.outputs.IMAGE }}:latest \
+                    -t ${{ steps.vars.outputs.IMAGE }}:${{ github.sha }} .
 
             - name: Push Docker image to GHCR
               run: |
-                  IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/myapp
-                  docker push $IMAGE_NAME:latest
-                  docker push $IMAGE_NAME:${{ github.sha }}
+                  docker push ${{ steps.vars.outputs.IMAGE }}:latest
+                  docker push ${{ steps.vars.outputs.IMAGE }}:${{ github.sha }}
