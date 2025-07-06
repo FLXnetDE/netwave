@@ -28,7 +28,6 @@ jobs:
     push-docker:
         runs-on: [self-hosted, linux]
         needs: build-docker
-
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -45,3 +44,12 @@ jobs:
                   IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${GITHUB_REPOSITORY##*/}"
                   docker push $IMAGE:latest
                   docker push $IMAGE:${{ github.sha }}
+
+    run-docker:
+        runs-on: [self-hosted, linux]
+        needs: push-docker
+        steps:
+            - name: Run Docker container
+              run: |
+                  IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${GITHUB_REPOSITORY##*/}"
+                  docker run -d --rm --name test-container $IMAGE:latest
