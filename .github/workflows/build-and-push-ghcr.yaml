@@ -11,7 +11,7 @@ jobs:
 
         permissions:
             contents: read
-            packages: write # Needed to push to GitHub Container Registry
+            packages: write
 
         steps:
             - name: Checkout code
@@ -24,11 +24,13 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Set image name from repo name
+            - name: Set lowercase image name
               id: vars
-              run: echo "IMAGE=ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}" >> $GITHUB_OUTPUT
+              run: |
+                  IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${GITHUB_REPOSITORY##*/}"
+                  echo "IMAGE=$IMAGE" >> $GITHUB_OUTPUT
 
-            - name: Build Docker image (app build happens in Dockerfile)
+            - name: Build Docker image
               run: |
                   docker build \
                     -t ${{ steps.vars.outputs.IMAGE }}:latest \
