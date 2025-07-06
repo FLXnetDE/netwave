@@ -5,7 +5,7 @@ import Channel from '../../channel/Channel';
 const channelRouter = (channelManager: ChannelManager): Router => {
     const channelRouter: Router = Router();
 
-    channelRouter.get('/', (_req: Request, res: Response) => {
+    channelRouter.get('/', (req: Request, res: Response) => {
         const channelRegistry: Map<number, Channel> =
             channelManager.getChannelRegistry();
 
