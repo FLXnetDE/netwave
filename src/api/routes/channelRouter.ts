@@ -1,18 +1,11 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import ChannelManager from '../../channel/ChannelManager';
-import Channel from '../../channel/Channel';
+import { index } from '../controllers/channelController';
 
 const channelRouter = (channelManager: ChannelManager): Router => {
     const channelRouter: Router = Router();
 
-    channelRouter.get('/', (req: Request, res: Response) => {
-        const channelRegistry: Map<number, Channel> =
-            channelManager.getChannelRegistry();
-
-        const channelIds: number[] = Array.from(channelRegistry.keys());
-
-        res.json(channelIds);
-    });
+    channelRouter.get('/', index(channelManager));
 
     return channelRouter;
 };
