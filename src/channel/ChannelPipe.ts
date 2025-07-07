@@ -22,7 +22,7 @@ class ChannelPipe {
      * @param channelMessage
      */
     private onChannelSocketMessage(channelMessage: ChannelMessage): void {
-        this.channelManager.registerClient(
+        this.channelManager.handleClient(
             channelMessage.channelId,
             channelMessage.clientInfo,
         );

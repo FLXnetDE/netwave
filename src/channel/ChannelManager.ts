@@ -92,13 +92,24 @@ class ChannelManager {
     }
 
     /**
-     * Register a client to a channel
-     * @param channelId channel id to add the client to
-     * @param clientInfo client info to be added
+     * Handle the client data behaviour
+     * @param channelId channel id where to be handled
+     * @param clientInfo client info to be handled
+     */
+    handleClient(channelId: number, clientInfo: ClientInfo): void {
+        if (!this.hasChannel(channelId)) this.createChannel(channelId);
+
+        if (!this.hasClient(channelId, clientInfo)) {
+            this.registerClient(channelId, clientInfo);
+        }
+    }
+
+    /**
+     * Register a client
+     * @param channelId channel id where to be registered
+     * @param clientInfo client info to be registered
      */
     registerClient(channelId: number, clientInfo: ClientInfo): void {
-        if (!this.hasChannel(channelId)) this.createChannel(channelId);
-        if (this.hasClient(channelId, clientInfo)) return;
         this.channelRegistry
             .get(channelId)!
             .channelClientRegistry.push(clientInfo);

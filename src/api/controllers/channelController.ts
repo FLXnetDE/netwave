@@ -2,15 +2,15 @@ import { Request, Response } from 'express';
 import ChannelManager from '../../channel/ChannelManager';
 import Channel from '../../channel/Channel';
 
-const index =
+const getChannels =
     (channelManager: ChannelManager) =>
     (req: Request, res: Response): void => {
         const channelRegistry: Map<number, Channel> =
             channelManager.getChannelRegistry();
 
-        const channelIds: number[] = Array.from(channelRegistry.keys());
+        const channels: Channel[] = Array.from(channelRegistry.values());
 
-        res.json(channelIds);
+        res.json(channels);
     };
 
-export { index };
+export { getChannels };
