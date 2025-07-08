@@ -1,19 +1,20 @@
 import express, { Request, Response } from 'express';
-import ChannelPipe from '../channel/ChannelPipe';
 import logger from '../util/logger';
-import { channelRouter } from './routes/channelRouter';
+import ApiServerOptions from './api-server-options';
+import { clientsRoute } from './routes/clients-route';
+import { ClientRegistry } from '../client/client-registry';
 
 const startApiServer = (
-    port: number = 3000,
-    channelPipe: ChannelPipe,
+    options: ApiServerOptions,
+    clientRegistry: ClientRegistry,
 ): void => {
     const app = express();
 
-    app.get('/', index);
+    app.get('/api', index);
 
-    app.use('/api/channel', channelRouter(channelPipe.getChannelManager()));
+    app.use('/api/clients', clientsRoute(clientRegistry));
 
-    app.listen(port, listen(port));
+    app.listen(options.port, listen(options.port));
 };
 
 const listen =

@@ -7,7 +7,7 @@ const customFormat = printf(({ level, message, timestamp }) => {
 });
 
 const logger = createLogger({
-    level: 'info',
+    level: 'debug',
     format: combine(timestamp(), customFormat),
     transports: [
         new transports.Console(),
