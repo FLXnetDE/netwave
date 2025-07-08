@@ -3,6 +3,7 @@ export interface Client {
     address: string;
     port: number;
     joinedAt: number;
+    lastActivity: number;
 }
 
 export default Client;

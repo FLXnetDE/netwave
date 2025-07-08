@@ -4,15 +4,22 @@ import Packet from './packet';
 import PacketHandler from './packet-handler';
 
 class PacketDispatcher {
-    private handlers = new Map<PacketType, PacketHandler>();
+    private handlers = new Map<PacketType, PacketHandler[]>();
 
-    register(type: PacketType, handler: PacketHandler) {
-        this.handlers.set(type, handler);
+    register(packetType: PacketType, handler: PacketHandler) {
+        if (!this.handlers.has(packetType)) {
+            this.handlers.set(packetType, []);
+        }
+        this.handlers.get(packetType)!.push(handler);
     }
 
     dispatch(packet: Packet, rinfo: RemoteInfo) {
-        const handler = this.handlers.get(packet.packetType);
-        if (handler) handler.handle(packet, rinfo);
+        const handlerList = this.handlers.get(packet.packetType);
+        if (handlerList) {
+            for (const handler of handlerList) {
+                handler.handle(packet, rinfo);
+            }
+        }
     }
 }
 

@@ -21,6 +21,7 @@ class LoginPacketHandler extends PacketHandler<LoginPacket> {
             address: remoteInfo.address,
             port: remoteInfo.port,
             joinedAt: Date.now(),
+            lastActivity: Date.now(),
         });
 
         channelManager.joinChannel(clientId, channelId);
