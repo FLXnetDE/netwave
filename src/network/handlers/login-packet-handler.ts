@@ -5,6 +5,7 @@ import PacketServer from '../packet-server';
 import logger from '../../util/logger';
 import LoginPacket from '../packets/login-packet';
 import LoginAckPacket from '../packets/login-ack-packet';
+import { channelManager } from '../../channel/channel-manager';
 
 class LoginPacketHandler extends PacketHandler<LoginPacket> {
     constructor(private server: PacketServer) {
@@ -12,7 +13,8 @@ class LoginPacketHandler extends PacketHandler<LoginPacket> {
     }
 
     handle(packet: LoginPacket, remoteInfo: RemoteInfo): void {
-        const clientId = clientRegistry.generateId();
+        const clientId: number = clientRegistry.generateId();
+        const channelId: number = packet.channelId;
 
         clientRegistry.add({
             id: clientId,
@@ -21,8 +23,10 @@ class LoginPacketHandler extends PacketHandler<LoginPacket> {
             joinedAt: Date.now(),
         });
 
+        channelManager.joinChannel(clientId, channelId);
+
         logger.info(
-            `Client ${clientId} joined from ${remoteInfo.address}:${remoteInfo.port}`,
+            `Client ${clientId} joined channel ${channelId} from ${remoteInfo.address}:${remoteInfo.port}`,
         );
 
         const ackPacket: LoginAckPacket = new LoginAckPacket(clientId);
